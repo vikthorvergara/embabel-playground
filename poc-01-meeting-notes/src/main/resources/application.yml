@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: poc-01-meeting-notes
+
+embabel:
+  models:
+    default-llm: claude-sonnet-4-6
