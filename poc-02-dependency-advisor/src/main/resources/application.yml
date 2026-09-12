@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: poc-02-dependency-advisor
+
+embabel:
+  models:
+    default-llm: claude-sonnet-4-6
+
+advisor:
+  maven-central:
+    base-url: https://repo.maven.apache.org/maven2
+    timeout: 5s

@@ -11,6 +11,7 @@ the goal, scope, agent design and "done" criteria before any code is written.
 | #  | POC | Focus | Definition |
 |----|-----|-------|------------|
 | 01 | Meeting Notes → Action Items | Agent basics: `@Agent`, `@Action`, `@AchievesGoal`, typed domain objects | [poc-01](docs/pocs/poc-01-meeting-notes-agent.md) |
+| 02 | Dependency Upgrade Advisor | Tools (`@LlmTool`), conditions (`@Condition`), branching plans, deterministic vs LLM actions | [poc-02](docs/pocs/poc-02-dependency-advisor.md) |
 
 ## Shared conventions
 
