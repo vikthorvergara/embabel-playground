@@ -12,6 +12,7 @@ the goal, scope, agent design and "done" criteria before any code is written.
 |----|-----|-------|------------|
 | 01 | Meeting Notes → Action Items | Agent basics: `@Agent`, `@Action`, `@AchievesGoal`, typed domain objects | [poc-01](docs/pocs/poc-01-meeting-notes-agent.md) |
 | 02 | Dependency Upgrade Advisor | Tools (`@LlmTool`), conditions (`@Condition`), branching plans, deterministic vs LLM actions | [poc-02](docs/pocs/poc-02-dependency-advisor.md) |
+| 03 | PR Review Agent | Per-action model selection, critic/revise loop, human-in-the-loop confirmation, cost tracking | [poc-03](docs/pocs/poc-03-pr-review-critic.md) |
 
 ## Shared conventions
 

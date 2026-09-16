@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: poc-03-pr-review
+
+embabel:
+  models:
+    default-llm: claude-sonnet-4-6
+    # Swapping either model is a config-only change
+    llms:
+      drafter: claude-haiku-4-5
+      critic: claude-sonnet-4-6
+
+review:
+  critic-enabled: true
+  max-iterations: 3
+  score-threshold: 0.8
