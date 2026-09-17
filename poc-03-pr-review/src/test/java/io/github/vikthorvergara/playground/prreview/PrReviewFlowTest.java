@@ -79,7 +79,7 @@ class PrReviewFlowTest extends EmbabelMockitoIntegrationTest {
         stubDrafter();
         stubCritic(0.9);
 
-        AgentProcess process = start(new ReviewRequest(DiffParserTest.sample(), true));
+        AgentProcess process = start(new AutomatedReviewRequest(DiffParserTest.sample()));
 
         assertThat(process.getStatus()).isEqualTo(AgentProcessStatusCode.COMPLETED);
         assertThat(process.last(ApprovedReview.class).autoApproved()).isTrue();

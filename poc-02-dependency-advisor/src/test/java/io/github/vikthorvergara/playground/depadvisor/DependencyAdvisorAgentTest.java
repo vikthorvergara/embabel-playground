@@ -39,6 +39,7 @@ class DependencyAdvisorAgentTest {
 
         assertThat(agent.readPom(new UserInput("<project/>")).source()).isEqualTo("input");
         assertThat(agent.readPom(new UserInput(dir.toString())).xml()).isEqualTo("<project/>");
+        assertThat(agent.readPomRequest(new PomRequest(dir.toString())).xml()).isEqualTo("<project/>");
     }
 
     @Test

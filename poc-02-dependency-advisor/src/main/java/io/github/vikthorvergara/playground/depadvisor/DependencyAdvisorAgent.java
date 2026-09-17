@@ -4,6 +4,7 @@ import com.embabel.agent.api.annotation.AchievesGoal;
 import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
 import com.embabel.agent.api.annotation.Condition;
+import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.OperationContext;
 import com.embabel.agent.domain.io.UserInput;
 
@@ -34,7 +35,16 @@ public class DependencyAdvisorAgent {
 
     @Action(description = "Read a pom.xml, either pasted in directly or from a file path")
     public PomFile readPom(UserInput input) {
-        String content = input.getContent().strip();
+        return load(input.getContent());
+    }
+
+    @Action(description = "Read a pom.xml sent by a remote caller, either inline or as a path")
+    public PomFile readPomRequest(PomRequest request) {
+        return load(request.pom());
+    }
+
+    private static PomFile load(String raw) {
+        String content = raw.strip();
         if (content.startsWith("<")) {
             return new PomFile("input", content);
         }
@@ -105,7 +115,8 @@ public class DependencyAdvisorAgent {
                         BreakingChangeAssessment.class);
     }
 
-    @AchievesGoal(description = "Produced a dependency upgrade report for a Maven project")
+    @AchievesGoal(description = "Produced a dependency upgrade report for a Maven project",
+            export = @Export(name = "advise_dependency_upgrades", remote = true, startingInputTypes = PomRequest.class))
     @Action(description = "Write the upgrade report, including breaking change notes for major upgrades")
     public UpgradeReport writeReport(VersionMatrix matrix, BreakingChangeAssessment assessment) {
         Set<String> majors = matrix.ofType(UpgradeType.MAJOR).stream()

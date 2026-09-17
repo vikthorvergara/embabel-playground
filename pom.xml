@@ -21,6 +21,7 @@
         <module>poc-01-meeting-notes</module>
         <module>poc-02-dependency-advisor</module>
         <module>poc-03-pr-review</module>
+        <module>poc-04-agent-server</module>
     </modules>
 
     <properties>

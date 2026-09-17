@@ -27,6 +27,14 @@ class MeetingNotesAgentTest {
     }
 
     @Test
+    void parseTranscriptTakesTheSamePathAsUserInput() {
+        MeetingNotes parsed = agent.parseTranscript(new MeetingTranscript("Attendees: Ana, Bruno"));
+
+        assertThat(parsed).isEqualTo(agent.parseNotes(new UserInput("Attendees: Ana, Bruno")));
+        assertThat(parsed.participants()).containsExactly("Ana", "Bruno");
+    }
+
+    @Test
     void extractActionItemsSendsNotesAndParticipantsToTheLlm() {
         var context = FakeOperationContext.create();
         var expected = new ActionItemDraft(List.of(

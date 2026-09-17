@@ -11,15 +11,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MeetingNotesAgentStructureTest {
 
     @Test
-    void plannerSeesThreeActionsAndOneGoal() {
+    void plannerSeesFourActionsAndOneGoal() {
         AgentScope scope = new AgentMetadataReader().createAgentMetadata(new MeetingNotesAgent());
 
         assertThat(scope).isNotNull();
         assertThat(scope.getActions()).extracting(Action::getName)
                 .anySatisfy(name -> assertThat(name).endsWith("parseNotes"))
+                .anySatisfy(name -> assertThat(name).endsWith("parseTranscript"))
                 .anySatisfy(name -> assertThat(name).endsWith("extractActionItems"))
                 .anySatisfy(name -> assertThat(name).endsWith("prioritise"))
-                .hasSize(3);
+                .hasSize(4);
         assertThat(scope.getGoals()).extracting(Goal::getDescription)
                 .containsExactly("A prioritised action item report has been produced from meeting notes");
     }

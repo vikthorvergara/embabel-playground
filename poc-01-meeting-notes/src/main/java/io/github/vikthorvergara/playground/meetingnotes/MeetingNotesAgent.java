@@ -3,6 +3,7 @@ package io.github.vikthorvergara.playground.meetingnotes;
 import com.embabel.agent.api.annotation.AchievesGoal;
 import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
+import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.OperationContext;
 import com.embabel.agent.domain.io.UserInput;
 
@@ -21,6 +22,11 @@ public class MeetingNotesAgent {
     @Action(description = "Parse raw meeting notes into title, participants and body")
     public MeetingNotes parseNotes(UserInput input) {
         return MeetingNotesParser.parse(input.getContent());
+    }
+
+    @Action(description = "Parse a meeting transcript sent by a remote caller")
+    public MeetingNotes parseTranscript(MeetingTranscript transcript) {
+        return MeetingNotesParser.parse(transcript.text());
     }
 
     @Action(description = "Extract action items from the meeting notes")
@@ -49,7 +55,8 @@ public class MeetingNotesAgent {
                         ActionItemDraft.class);
     }
 
-    @AchievesGoal(description = "A prioritised action item report has been produced from meeting notes")
+    @AchievesGoal(description = "A prioritised action item report has been produced from meeting notes",
+            export = @Export(name = "extract_action_items", remote = true, startingInputTypes = MeetingTranscript.class))
     @Action(description = "Validate owners and order action items by priority and due date")
     public ActionItemReport prioritise(ActionItemDraft draft, MeetingNotes notes) {
         List<ActionItem> items = draft.items().stream()

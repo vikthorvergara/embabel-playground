@@ -4,6 +4,7 @@ import com.embabel.agent.api.annotation.AchievesGoal;
 import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.Agent;
 import com.embabel.agent.api.annotation.Condition;
+import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.ActionContext;
 import com.embabel.agent.api.common.OperationContext;
 import com.embabel.agent.api.common.workflow.loop.Attempt;
@@ -32,6 +33,11 @@ public class PrReviewAgent {
     @Action(post = {NEEDS_HUMAN_APPROVAL, AUTO_APPROVE}, description = "Treat user input as a diff to review interactively")
     public ReviewRequest fromUserInput(UserInput input) {
         return new ReviewRequest(input.getContent(), false);
+    }
+
+    @Action(post = {NEEDS_HUMAN_APPROVAL, AUTO_APPROVE}, description = "Accept a diff from an automated caller")
+    public ReviewRequest fromAutomatedRequest(AutomatedReviewRequest request) {
+        return new ReviewRequest(request.diff(), true);
     }
 
     @Condition(name = NEEDS_HUMAN_APPROVAL)
@@ -81,7 +87,8 @@ public class PrReviewAgent {
                 .formatted(review.review().comments().size(), approved.toMarkdown()));
     }
 
-    @AchievesGoal(description = "A code review has been produced for an automated caller")
+    @AchievesGoal(description = "A code review has been produced for an automated caller",
+            export = @Export(name = "review_diff", remote = true, startingInputTypes = AutomatedReviewRequest.class))
     @Action(pre = AUTO_APPROVE, description = "Release the review without human confirmation")
     public ApprovedReview autoApproveReview(CritiquedReview review, OperationContext context) {
         return approve(review, true, context);

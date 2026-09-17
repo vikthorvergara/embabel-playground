@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: poc-04-agent-server
+  ai:
+    mcp:
+      server:
+        name: embabel-playground
+        version: 0.1.0
+
+embabel:
+  agent:
+    application:
+      name: embabel-playground
+  models:
+    default-llm: claude-sonnet-4-6
+    llms:
+      drafter: claude-haiku-4-5
+      critic: claude-sonnet-4-6
+
+agent-server:
+  # Set AGENT_SERVER_API_KEY to require an X-API-Key header on every request
+  api-key: ${AGENT_SERVER_API_KEY:}
+
+review:
+  critic-enabled: true
+  max-iterations: 3
+  score-threshold: 0.8
+
+advisor:
+  maven-central:
+    base-url: https://repo.maven.apache.org/maven2
+    timeout: 5s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name}]"

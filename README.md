@@ -13,6 +13,7 @@ the goal, scope, agent design and "done" criteria before any code is written.
 | 01 | Meeting Notes → Action Items | Agent basics: `@Agent`, `@Action`, `@AchievesGoal`, typed domain objects | [poc-01](docs/pocs/poc-01-meeting-notes-agent.md) |
 | 02 | Dependency Upgrade Advisor | Tools (`@LlmTool`), conditions (`@Condition`), branching plans, deterministic vs LLM actions | [poc-02](docs/pocs/poc-02-dependency-advisor.md) |
 | 03 | PR Review Agent | Per-action model selection, critic/revise loop, human-in-the-loop confirmation, cost tracking | [poc-03](docs/pocs/poc-03-pr-review-critic.md) |
+| 04 | Agents as a Service | Exposing agents over MCP and REST, observability, containerised local run, retrospective | [poc-04](docs/pocs/poc-04-agents-as-mcp-server.md) |
 
 ## Shared conventions
 
@@ -29,10 +30,13 @@ the goal, scope, agent design and "done" criteria before any code is written.
 ```bash
 mvn verify                                        # all modules, no API key needed
 mvn -pl poc-01-meeting-notes spring-boot:run      # interactive shell, needs ANTHROPIC_API_KEY
+mvn install -DskipTests && mvn -pl poc-04-agent-server spring-boot:run   # MCP + REST server
 ```
 
-Each POC runs as an interactive Embabel shell (`x "<input>"`).
+POCs 01-03 run as an interactive Embabel shell (`x "<input>"`). POC 04 serves all three agents
+over MCP and REST; see its definition for how to connect an MCP client.
 
 ## Results
 
 Each definition ends with "Running" and "Learnings" sections written after implementation.
+[docs/RETROSPECTIVE.md](docs/RETROSPECTIVE.md) sums up all four.
