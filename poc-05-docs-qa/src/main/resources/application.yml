@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: poc-05-docs-qa
+
+embabel:
+  models:
+    default-llm: claude-sonnet-4-6
+
+docs-qa:
+  # mvn -pl poc-05-docs-qa spring-boot:run runs from the module directory, so index the repo root
+  root: ..
+  paths:
+    - README.md
+    - docs
+  top-k: 6

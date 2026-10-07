@@ -14,6 +14,7 @@ the goal, scope, agent design and "done" criteria before any code is written.
 | 02 | Dependency Upgrade Advisor | Tools (`@LlmTool`), conditions (`@Condition`), branching plans, deterministic vs LLM actions | [poc-02](docs/pocs/poc-02-dependency-advisor.md) |
 | 03 | PR Review Agent | Per-action model selection, critic/revise loop, human-in-the-loop confirmation, cost tracking | [poc-03](docs/pocs/poc-03-pr-review-critic.md) |
 | 04 | Agents as a Service | Exposing agents over MCP and REST, observability, containerised local run, retrospective | [poc-04](docs/pocs/poc-04-agents-as-mcp-server.md) |
+| 05 | Docs Q&A | RAG with Lucene and `ToolishRag`, citations verified in plain Java | [poc-05](docs/pocs/poc-05-docs-qa-rag.md) |
 
 ## Shared conventions
 
@@ -33,8 +34,8 @@ mvn -pl poc-01-meeting-notes spring-boot:run      # interactive shell, needs ANT
 mvn install -DskipTests && mvn -pl poc-04-agent-server spring-boot:run   # MCP + REST server
 ```
 
-POCs 01-03 run as an interactive Embabel shell (`x "<input>"`). POC 04 serves all three agents
-over MCP and REST; see its definition for how to connect an MCP client.
+POCs 01-03 and 05 run as an interactive Embabel shell (`x "<input>"`). POC 04 serves the agents
+from POCs 01-03 over MCP and REST; see its definition for how to connect an MCP client.
 
 ## Results
 
