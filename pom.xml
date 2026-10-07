@@ -23,6 +23,7 @@
         <module>poc-03-pr-review</module>
         <module>poc-04-agent-server</module>
         <module>poc-05-docs-qa</module>
+        <module>poc-06-decision-helper</module>
     </modules>
 
     <properties>

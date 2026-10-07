@@ -48,3 +48,14 @@ Spring/JVM codebase: yes. The GOAP planner earns its keep once there are branche
 - POC 03: compare 5 sample diffs with and without the critic (`review.critic-enabled=false`).
 - POC 04: `docker compose up` and a session from Claude Code against the SSE endpoint.
 - Report the `RepeatUntilAcceptable` extra-generation behaviour upstream.
+
+## Addendum: POCs 05 and 06
+
+| POC | Question | Answer |
+|-----|----------|--------|
+| 05 Docs Q&A | Can the agent answer from our docs and prove it? | Yes. `ToolishRag` over an in-memory Lucene index gives the LLM search tools; asking for verbatim quotes lets plain Java verify every citation. |
+| 06 Decision helper | Can independent LLM calls run in parallel and be combined? | Yes. `ScatterGather` runs one analyst call per option concurrently; the ranking is computed in Java from the scores. |
+
+Both confirm the pattern from the first four: the LLM proposes (answers, quotes, scores) and plain
+code decides what is kept and in which order. New things to watch: generators run on the
+platform thread pool, and failed actions are retried by default.

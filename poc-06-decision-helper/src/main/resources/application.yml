@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: poc-06-decision-helper
+
+embabel:
+  models:
+    default-llm: claude-sonnet-4-6
+    llms:
+      analyst: claude-haiku-4-5
+      judge: claude-sonnet-4-6
+
+decisions:
+  max-options: 5
+  max-criteria: 6
+  max-concurrency: 4
