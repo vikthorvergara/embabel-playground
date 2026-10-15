@@ -72,10 +72,6 @@ class AgentController {
                 .body(new RunResponse(processId, name, output.toString(), output));
     }
 
-    /**
-     * A TerminateAgentException leaves the process TERMINATED with a null failureInfo, so the reason
-     * the agent bound right before throwing is the only readable explanation.
-     */
     @ExceptionHandler(ProcessExecutionException.class)
     ResponseEntity<Map<String, String>> failed(ProcessExecutionException e) {
         AgentProcess process = e.getAgentProcess();

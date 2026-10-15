@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-/**
- * Statements go in as multipart files and come back out as the report files the spending agent wrote,
- * so the CSV bytes never travel through a JSON body or an MCP client's context.
- */
 @RestController
 class UploadController {
 

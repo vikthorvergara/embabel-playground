@@ -16,7 +16,7 @@ class PiiGuardRailTest {
                 "transfer to BR1800360305000010009795493C1",
                 "CPF 123.456.789-09",
                 "card 4111111111111111",
-                "mail ana@mail.example"}) {
+                "mail ana@mail.invalid"}) {
             ValidationResult result = guardRail.validate(prompt, null);
             assertThat(result.isValid()).as(prompt).isFalse();
             assertThat(result.getErrors()).singleElement().satisfies(error -> {

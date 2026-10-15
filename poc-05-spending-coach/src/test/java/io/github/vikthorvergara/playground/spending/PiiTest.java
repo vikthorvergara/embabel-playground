@@ -11,7 +11,7 @@ class PiiTest {
         assertThat(Pii.found("IBAN: BR1800360305000010009795493C1")).isTrue();
         assertThat(Pii.found("CPF 123.456.789-09")).isTrue();
         assertThat(Pii.found("card 4111 1111 1111 1111")).isTrue();
-        assertThat(Pii.found("contact maria@mail.example")).isTrue();
+        assertThat(Pii.found("contact maria@mail.invalid")).isTrue();
         assertThat(Pii.found("NIF 123456789")).isTrue();
         assertThat(Pii.found("phone +55 11 91234-5678")).isTrue();
     }
@@ -28,7 +28,7 @@ class PiiTest {
     void maskReplacesIdentifiersOnly() {
         assertThat(Pii.mask("PIX JOAO CPF 123.456.789-09")).isEqualTo("PIX JOAO CPF #");
         assertThat(Pii.mask("BR1800360305000010009795493C1 TED")).isEqualTo("# TED");
-        assertThat(Pii.mask("ana@mail.example paid")).isEqualTo("# paid");
+        assertThat(Pii.mask("ana@mail.invalid paid")).isEqualTo("# paid");
         assertThat(Pii.mask("LOJA 12 SP")).isEqualTo("LOJA 12 SP");
     }
 }
