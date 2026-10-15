@@ -22,6 +22,7 @@
         <module>poc-02-dependency-advisor</module>
         <module>poc-03-pr-review</module>
         <module>poc-04-agent-server</module>
+        <module>poc-05-spending-coach</module>
     </modules>
 
     <properties>

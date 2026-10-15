@@ -48,6 +48,17 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>io.github.vikthorvergara.playground</groupId>
+            <artifactId>poc-05-spending-coach</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.embabel.agent</groupId>
+                    <artifactId>embabel-agent-starter-shell</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-starter-mcpserver</artifactId>
             <version>${embabel-agent.version}</version>
