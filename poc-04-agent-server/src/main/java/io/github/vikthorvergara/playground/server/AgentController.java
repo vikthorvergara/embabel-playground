@@ -2,7 +2,9 @@ package io.github.vikthorvergara.playground.server;
 
 import com.embabel.agent.api.common.autonomy.AgentProcessExecution;
 import com.embabel.agent.api.common.autonomy.ProcessExecutionException;
+import com.embabel.agent.core.AgentProcess;
 import com.embabel.agent.core.Goal;
+import io.github.vikthorvergara.playground.spending.TerminationReason;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -72,9 +74,11 @@ class AgentController {
 
     @ExceptionHandler(ProcessExecutionException.class)
     ResponseEntity<Map<String, String>> failed(ProcessExecutionException e) {
-        String processId = e.getAgentProcess().getId();
+        AgentProcess process = e.getAgentProcess();
+        TerminationReason reason = process.last(TerminationReason.class);
+        String error = reason != null ? reason.message() : String.valueOf(e.getMessage());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT)
-                .header(PROCESS_ID_HEADER, processId)
-                .body(Map.of("processId", processId, "error", String.valueOf(e.getMessage())));
+                .header(PROCESS_ID_HEADER, process.getId())
+                .body(Map.of("processId", process.getId(), "error", error));
     }
 }

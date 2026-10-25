@@ -6,20 +6,34 @@ spring:
       server:
         name: embabel-playground
         version: 0.1.0
+  servlet:
+    multipart:
+      max-file-size: 6MB
+      max-request-size: 32MB
 
 embabel:
   agent:
     application:
       name: embabel-playground
+    platform:
+      llm-operations:
+        data-binding:
+          max-attempts: 3
   models:
     default-llm: claude-sonnet-4-6
     llms:
       drafter: claude-haiku-4-5
       critic: claude-sonnet-4-6
+      layout: claude-haiku-4-5
+      categoriser: claude-haiku-4-5
+      coach: claude-sonnet-4-6
 
 agent-server:
   # Set AGENT_SERVER_API_KEY to require an X-API-Key header on every request
   api-key: ${AGENT_SERVER_API_KEY:}
+  show-planning: false
+  budgets:
+    analyse_spending: 0.25
 
 review:
   critic-enabled: true
@@ -30,6 +44,35 @@ advisor:
   maven-central:
     base-url: https://repo.maven.apache.org/maven2
     timeout: 5s
+
+spending:
+  work-dir: ${SPENDING_WORK_DIR:./work}
+  batch-size: 40
+  parallelism: 4
+  max-merchants: 400
+  low-confidence: 0.7
+  date-order: DAY_FIRST
+  month-by: TRANSACTION_DATE
+  currency: BRL
+  csv-format: COMMA_DOT
+  max-file-bytes: 5242880
+  transfer-keywords:
+    - PAGAMENTO FATURA
+    - PAYMENT RECEIVED
+    - PIX
+    - TED
+    - DOC
+    - TRANSF
+    - MB WAY
+  layouts:
+    - name: generic-signed
+      kind: BANK
+      delimiter: ","
+      date-column: 0
+      date-format: yyyy-MM-dd
+      description-column: 1
+      amount-column: 2
+      positive-is-spend: false
 
 management:
   endpoints:

@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: poc-05-spending-coach
+
+embabel:
+  models:
+    default-llm: claude-sonnet-4-6
+    llms:
+      layout: claude-haiku-4-5
+      categoriser: claude-haiku-4-5
+      coach: claude-sonnet-4-6
+  agent:
+    platform:
+      llm-operations:
+        data-binding:
+          max-attempts: 3
+
+spending:
+  work-dir: ${SPENDING_WORK_DIR:./work}
+  batch-size: 40
+  parallelism: 4
+  max-merchants: 400
+  low-confidence: 0.7
+  date-order: DAY_FIRST
+  month-by: TRANSACTION_DATE
+  currency: BRL
+  csv-format: COMMA_DOT
+  max-file-bytes: 5242880
+  transfer-keywords:
+    - PAGAMENTO FATURA
+    - PAYMENT RECEIVED
+    - PIX
+    - TED
+    - DOC
+    - TRANSF
+    - MB WAY
+  layouts:
+    - name: generic-signed
+      kind: BANK
+      delimiter: ","
+      date-column: 0
+      date-format: yyyy-MM-dd
+      description-column: 1
+      amount-column: 2
+      positive-is-spend: false
