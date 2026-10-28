@@ -1,46 +1,50 @@
 # Recording script for slide 9
 
-Target: 35 seconds in the talk. Record once at full length, cut afterwards. The run must make zero model calls, so it goes through the POC 04 server with `coach: false`; the shell path always asks for coaching and would show one call.
+Target: 40 seconds in the talk. Record once at full length, cut afterwards. Ragbot has not been run in this repository yet; this recording is the run that backs the talk, so do it before any dry run.
 
 ## Before recording
 
-1. Copy the synthetic statements to a folder outside the repo:
-   `poc-05-spending-coach/src/test/resources/statements/{bank-q3,savings-q3,card-q3,card-q3-overlap}.csv` to `statements/`.
-2. Copy `poc-05-spending-coach/src/test/resources/statements/rules.csv` to `work/rules.csv` in the directory the server runs from, so every merchant is covered.
-3. Delete `work/merchants-learned.csv` and `work/layouts-learned.csv` if present.
-4. Set `ANTHROPIC_API_KEY=test-key`; no real key is needed. Plan logging is turned on by the start argument below.
-5. Two terminals side by side, dark theme, large font: server log on the left, curl on the right.
+1. Clone `github.com/embabel/ragbot` outside this repository.
+2. Set a model key. Ragbot's default `application.yml` uses OpenAI, so set `OPENAI_API_KEY`; to use Claude instead, set `ANTHROPIC_API_KEY` and change the chat model in `application.yml` as its README describes. Embeddings come from the default provider, so the key must cover them too.
+3. Delete `./.lucene-index` if it exists, so ingestion shows on screen.
+4. Two windows side by side, dark theme, large font: the shell on the left, the browser on the right.
 
 ## Take
 
 ```bash
-mvn install -DskipTests
+./scripts/shell.sh
 ```
 
-```bash
-mvn -pl poc-04-agent-server spring-boot:run -Dspring-boot.run.arguments=--agent-server.show-planning=true
+Inside the shell:
+
+```
+ingest
 ```
 
-```bash
-curl -F files=@statements/bank-q3.csv -F files=@statements/savings-q3.csv -F files=@statements/card-q3.csv -F files=@statements/card-q3-overlap.csv localhost:8080/uploads
+```
+ingest https://www.gutenberg.org/files/56208/56208-h/56208-h.htm
 ```
 
-```bash
-curl -X POST localhost:8080/agents/analyse_spending -H 'Content-Type: application/json' -d '{"sources": ["<uuid>/bank-q3.csv", "<uuid>/savings-q3.csv", "<uuid>/card-q3.csv", "<uuid>/card-q3-overlap.csv"], "inline": [], "coach": false}'
+```
+uichat 8888
 ```
 
-```bash
-curl -o summary.csv localhost:8080/reports/<runId>/summary.csv
-```
+In the browser at `http://localhost:8888`, ask in order:
 
-Keep on screen, in this order:
+1. What did Schumann think of Liszt?
+2. What did Philip Hale think of Liszt?
+3. Contrast Hale and Schumann's attitude to Liszt.
 
-1. The "formulated plan:" lines. The first lists `inferLayouts` and `coach`; after `sniffLayouts` the plan starts with `useKnownLayouts`; after `analyse` it ends `skipCoaching -> writeReport`.
-2. The JSON answer: `"route": "rules-only"` and the fenced `summary.csv` in `markdown`.
-3. `summary.csv` opened in a spreadsheet.
+Keep on screen: the tool calls appearing as the model searches, and at least one direct quote in each answer. On the third question, the two separate searches are the point of the talk.
+
+## Check before cutting
+
+- The answers quote the sources. If an answer has no quote, re-ask; if it still has none, say so in the talk rather than cutting around it.
+- Note which tools were called on the third question; slide 5 names vector, text, regex and expand, so trim that list to what actually appeared.
+- Note the answer time of the third question; the trade-off slide says agentic RAG is slower, and the number makes that concrete.
 
 ## Cut
 
-- Drop the Spring boot banner and the Maven lines.
-- Keep: plan lines (15 s), JSON route and table (12 s), spreadsheet (8 s).
-- Under 40 seconds total. No audio in the clip; the transcript carries the words.
+- Drop the Spring boot banner and most of the ingestion log; keep its last line.
+- Keep: ingest finishing (5 s), question 1 with tool calls and answer (10 s), question 3 with both searches and the quoted answer (25 s).
+- Under 45 seconds total. No audio in the clip; the transcript carries the words.

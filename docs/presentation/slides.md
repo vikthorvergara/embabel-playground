@@ -1,105 +1,117 @@
 # Embabel in five minutes: slides
 
-Twelve slides, dark background, one idea each. Everything below a `---` line is the whole text of that slide. The story follows Rod Johnson's post "The Embabel Vision" (Medium, June 2025); POC 05 is the proof. Code slides are screenshots with syntax highlighting, never pasted text. Render the diagram on slide 4 as an image.
+Twelve slides, dark background, one idea each. Everything below a `---` line is the whole text of that slide. The talk walks through building Ragbot, the agentic RAG chatbot from `github.com/embabel/ragbot`. Code is shown highlighted, never as plain text; it is the code at Ragbot's HEAD, which matches the Embabel 1.5.1 API (checked with javap). Render the diagram on slide 5 as an image.
 
 ---
 
 ## 1
 
-**Embabel**
+**A chatbot with Embabel**
 
-The vision, tested
+agentic RAG on the JVM
 
 ---
 
 ## 2
 
-**Gen AI value lives in business systems**
+> What did Schumann think of Liszt?
 
-Python first · far from them
+19th-century criticism · the model cannot know it
 
 ---
 
 ## 3
 
-**Who chains the actions?**
+**A chat is just an agent process**
 
-nobody · you · the LLM
-
-Embabel: a planner, not a model
+`Conversation` on the blackboard · action fires on `UserMessage`
 
 ---
 
 ## 4
 
-**Add an action. The planner uses it.**
-
-Image: three action boxes, a fourth added on the right, a new arrow drawn by the planner.
-
-```
- [ A ] ──▶ [ B ] ──▶ goal
-   └────▶ [ new ] ──┘
+```java
+@Action(canRerun = true, trigger = UserMessage.class)
+void respond(Conversation conversation, ActionContext context) {
+    var reply = context.ai()
+            .withAutoLlm()
+            .respond(conversation.getMessages());
+    context.sendMessage(conversation.addMessage(reply));
+}
 ```
 
 ---
 
 ## 5
 
-**The domain model is the plan**
+**Pipeline RAG vs agentic RAG**
 
-types = conditions · safe methods = tools
+Image: left, a straight line `question → retrieve → stuff → answer`; right, the model in a loop with search tools `vector · text · regex · expand`.
 
 ---
 
 ## 6
 
-**Spring · MCP · A2A**
+```java
+var reply = context.ai()
+        .withLlm(properties.chatLlm())
+        .withReference(toolishRag)
+        .rendering("ragbot")
+        .respondWithSystemPrompt(conversation, Map.of(
+                "properties", properties,
+                "voice", properties.voice(),
+                "objective", properties.objective()));
+```
 
 ---
 
 ## 7
 
-> "No one is going to vibe code their way"
-> Rod Johnson
+**voice × objective**
 
-types · tests · refactoring
+Jinja templates · switch persona in `application.yml`
 
 ---
 
 ## 8
 
-**Proof: spending coach**
+```java
+@Bean
+Chatbot chatbot(AgentPlatform agentPlatform) {
+    return AgentProcessChatbot.utilityFromPlatform(agentPlatform);
+}
+```
 
-bank + card CSVs in · 7 files out · model for 3 judgement calls
+new action = new capability
 
 ---
 
 ## 9
 
-Recording, 35 seconds
+Recording, 40 seconds
 
 ---
 
 ## 10
 
-Screenshot: `SpendingAnalysis.java` lines 57 to 135
+**Lucene · Neo4j · Spring AI VectorStore**
 
-a record the model can query
+same API · different tools for the model
 
 ---
 
 ## 11
 
-**Vision vs what I ran**
+**Trade-offs**
 
-planning ✓ · domain model ✓ · Spring ✓ · MCP ✓ · tests ✓
+model chooses what to read · grounded quotes · no pipeline to tune
 
-A2A ✗ · natural language agents ✗
+more round trips · depends on tool use · API moved fast
 
 ---
 
 ## 12
 
-**Not there yet. Already useful.**
+**Spring AI · LangChain4j · LangGraph**
 
-code-centric · graphical · converging
+retrieve-then-answer vs search-while-answering

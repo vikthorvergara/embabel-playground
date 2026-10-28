@@ -41,4 +41,4 @@ over MCP and REST; see its definition for how to connect an MCP client.
 
 Each definition ends with "Running" and "Learnings" sections written after implementation.
 [docs/RETROSPECTIVE.md](docs/RETROSPECTIVE.md) sums up the first four.
-[docs/presentation/](docs/presentation/slides.md) holds a five-minute talk built on POC 05: slides, transcript and recording script.
+[docs/presentation/](docs/presentation/slides.md) holds a five-minute talk on building an agentic RAG chatbot with Embabel: slides, transcript and recording script.
