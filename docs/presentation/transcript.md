@@ -1,51 +1,51 @@
 # Embabel in five minutes: transcript
 
-Spoken word for word. The clock is the target time to reach each slide. About 650 words, 4:45 at a calm pace, 15 seconds of slack.
+Spoken word for word. The clock is the target time to reach each slide. About 650 words, 4:45 at a calm pace, 15 seconds of slack. The argument is Rod Johnson's post "The Embabel Vision" (Medium, June 24, 2025), paraphrased; the evidence is POC 05 in this repository.
 
 ## 0:00 Slide 1
 
-Embabel is an agent framework for the JVM, built on Spring. Five proofs of concept later, I will show you the fifth, the one where the framework had to earn its place.
+Embabel is an agent framework for the JVM from Rod Johnson, the person who created Spring. In June 2025 he wrote down where he wants it to go. I will walk you through that vision, and for each part I will show you what held up when I built a real agent with it.
 
 ## 0:20 Slide 2
 
-The idea is small. You write Java methods with typed inputs and a typed output. You annotate them. One method is marked as the goal. There is no graph to wire. A planner looks at the types on the blackboard and at what each method produces, and it picks the order at runtime. After every step it plans again.
+His starting point: the business value of Gen AI is inside existing business systems, and most of the first wave of agent tooling came from Python, which seldom sits next to those systems. So the goal is to make Gen AI safe and dependable where the money already is, on the JVM.
 
-## 0:45 Slide 3
+## 0:40 Slide 3
 
-This is how the planner sees your code. Each action consumes types and produces one. The goal is a type too. The planner searches a path from what it has to what the goal needs: goal oriented action planning, from game AI, with your records as the world state.
+The core idea is planning. Other frameworks either have no planning step, make you chain actions by hand, as in a state machine or a graph, or ask the LLM to decide the next step. Embabel uses a classic AI planner, goal oriented action planning from games, not a model. It is deterministic, so you can predict and explain the route.
 
 ## 1:05 Slide 4
 
-Branching is two actions that produce the same type with opposite preconditions. A condition is a method returning a boolean. One thing bit me in the second POC: a condition no action lists in its `post` array is invisible to the planner, the plan never forms, the process ends stuck. So the action that settles a fork declares both sides in `post`.
+And it grows. You add an action or a goal and the planner can combine it with the existing ones in ways nobody programmed explicitly, but only ever using steps you designed. Rod compares it to how people learn: small skills, chained into bigger ones.
 
-## 1:30 Slide 5
+## 1:25 Slide 5
 
-The POC. Bank and card CSV exports in: any encoding, decimal commas, pending rows, overlapping files. Seven files out: spending by category and month, every row with how its category was decided, recurring charges, anomalies, cash flow, a coaching note. Every number is BigDecimal in Java. The model is asked three things only: a column mapping for a header nobody has seen, a category for merchants the rules do not know, and the note. Each answer is checked in Java: the mapping must parse five rows, unknown merchant ids are dropped, the note keeps only amounts that exist.
+Second idea: the domain model. Preconditions and postconditions are mostly the data flow of your own domain objects, so types do the planning work. Those objects can have behaviour too, and you choose which methods are safe for the model to call as tools. The model becomes a data dictionary for the problem.
 
-## 2:05 Slide 6
+## 1:45 Slide 6
 
-Thirteen actions, six conditions, three forks. The same branching shape three times in one agent. Each fork has a cheap deterministic side and a model side, and the planner takes the model side only when the data forces it.
+Third: integration and standards. It follows Spring patterns, so it drops into the applications you already run. It speaks MCP today and A2A is on the roadmap, so your agents can join what he calls the agentic web.
 
-## 2:20 Slide 7
+## 2:00 Slide 7
 
-Code. `sniffLayouts` recognises each file from a synonym table, configured layouts and layouts learned on earlier runs, and declares both conditions in `post`. Below it the two condition methods, one line each. Then `useKnownLayouts`, producing the same `LayoutMappings` type as the model-backed `inferLayouts`. That is the whole fork.
+Fourth, my favourite line from the post: no one is going to vibe code their way into Gen AI for critical systems. Engineering practice still matters. Types, tests, refactoring.
 
-## 2:45 Slide 8
+## 2:15 Slide 8
 
-The categoriser. It sends distinct merchants, not rows, in batches of forty through `parallelMap`. Temperature zero. A guardrail checks every prompt for account numbers, tax ids and emails before it leaves the JVM. The output record uses the category enum with Bean Validation, so an invented category never reaches the report: it fails binding and Embabel retries, three times at most by configuration.
+Now the proof. I built a spending coach. Bank and card CSV exports in, any encoding, overlapping files. Seven files out: spending by category and month, recurring charges, anomalies, cash flow and a coaching note. Every number is BigDecimal in Java. The model is used for three judgement calls only: mapping an unknown header, naming a category for an unknown merchant, writing the note. Thirteen actions, six conditions, three forks.
 
-## 3:10 Slide 9
+## 2:40 Slide 9
 
-The recording. Synthetic statements, a rules file covering every merchant, no coaching requested. Watch the plan lines.
+Watch the plan lines in the log.
 
-## 3:45 Slide 10
+## 3:15 Slide 10
 
-What you saw. The first plan listed `inferLayouts` and `coach`, because nothing was settled yet. After `sniffLayouts` it replanned to `useKnownLayouts`; after `analyse`, to `skipCoaching`. Nine actions, zero model calls, route rules-only. Same bank next month: merchants learned on the first run keep it at zero. Ninety-six tests in the module, none needs an API key.
+What you saw: the first plan included the model steps, because nothing was settled. After the files were recognised the planner replanned to the known layouts, and after the analysis it skipped coaching. Nine actions, zero model calls. That is planning, deterministic and explainable. And this is the domain model idea in code: the analysis is a plain Java record, and its annotated methods are the tools the coach calls. The model can only quote figures the record returns, and Java drops any amount that does not exist.
 
-## 4:00 Slide 11
+## 3:50 Slide 11
 
-Trade-offs. Plus: the types are the contract, so the planner, the JSON schema for the model, the MCP tool schema and the REST body come from the same records. Deterministic is the default, the model the exception. And it all tests without a key. Minus: a forgotten `post` entry means a stuck planner and nothing tells you why. Terminating from inside an action leaves the failure info null, so I bind the reason to the blackboard myself. And each flow test class boots Spring for a hundred seconds.
+Scorecard. Planning, domain model, Spring integration, MCP and testing all held up: ninety-six tests, none needs an API key, and the same agent is served over MCP and REST without a code change. I did not try A2A or natural-language agents, so I make no claim about them. Costs I paid: a condition no action declares in its post list leaves the planner stuck with no explanation, a terminated run does not carry its reason, and goals exported over MCP plan across every agent on the server, so names must stay unique.
 
-## 4:30 Slide 12
+## 4:25 Slide 12
 
-Where it sits. Spring AI alone gives you tool calling; you write the control flow. LangChain4j, the same. LangGraph makes you draw the graph. Embabel plans the graph from your types and conditions and re-plans after every step. It fits when the workflow is mostly deterministic with a few judgement calls. Here the planner earned its keep at the third fork. Thank you.
+Rod is upfront that Embabel does not do everything in the vision yet. He sees code-centric frameworks like CrewAI, Google ADK and LangGraph converging with graphical ones. Embabel bets that a strong domain model is what both sides need. From my run: it is already useful when the workflow is mostly deterministic with a few judgement calls. Thank you.

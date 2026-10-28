@@ -1,6 +1,6 @@
 # Embabel in five minutes: slides
 
-Twelve slides, dark background, one idea each. Everything below a `---` line is the whole text of that slide. Code slides are screenshots with syntax highlighting, never pasted text. Render the two diagrams as images before presenting.
+Twelve slides, dark background, one idea each. Everything below a `---` line is the whole text of that slide. The story follows Rod Johnson's post "The Embabel Vision" (Medium, June 2025); POC 05 is the proof. Code slides are screenshots with syntax highlighting, never pasted text. Render the diagram on slide 4 as an image.
 
 ---
 
@@ -8,74 +8,69 @@ Twelve slides, dark background, one idea each. Everything below a `---` line is 
 
 **Embabel**
 
-Agents the planner runs
+The vision, tested
 
 ---
 
 ## 2
 
-**Typed methods in. Plan out.**
+**Gen AI value lives in business systems**
 
-`@Action` · `@Condition` · `@AchievesGoal`
+Python first · far from them
 
 ---
 
 ## 3
 
-Image: boxes for the actions, a GOAP planner above them picking the arrows, the goal type on the right.
+**Who chains the actions?**
 
-```
- @Action  @Action  @Action        goal
- [ A ] -> [ B ] -> [ C ] -> ... -> [ SpendingReport ]
-    \______ planner picks the path ______/
-```
+nobody · you · the LLM
+
+Embabel: a planner, not a model
 
 ---
 
 ## 4
 
-**Conditions settle in `post`**
+**Add an action. The planner uses it.**
 
-Two actions · one output type · opposite `pre`
+Image: three action boxes, a fourth added on the right, a new arrow drawn by the planner.
+
+```
+ [ A ] ──▶ [ B ] ──▶ goal
+   └────▶ [ new ] ──┘
+```
 
 ---
 
 ## 5
 
-**Spending coach**
+**The domain model is the plan**
 
-CSVs in · 7 files out · 3 model calls at most
+types = conditions · safe methods = tools
 
 ---
 
 ## 6
 
-Image: the three forks from the POC 05 plan diagram.
-
-```
-sniffLayouts ─┬─ allLayoutsKnown ─▶ useKnownLayouts ─────────┐
-              └─ hasUnknownLayout ▶ inferLayouts (LLM) ──────┴▶ parseStatements ▶ applyRules
-applyRules ───┬─ allCategorised ──▶ acceptRuledLedger ───────┐
-              └─ hasUncategorised ▶ categoriseRemainder (LLM)┴▶ analyse
-analyse ──────┬─ noCoaching ──────▶ skipCoaching ────────────┐
-              └─ wantsCoaching ───▶ coach (LLM) ─────────────┴▶ writeReport
-```
+**Spring · MCP · A2A**
 
 ---
 
 ## 7
 
-Screenshot: `SpendingCoachAgent.java` lines 118 to 151
+> "No one is going to vibe code their way"
+> Rod Johnson
 
-`sniffLayouts` · two `@Condition`s · `useKnownLayouts`
+types · tests · refactoring
 
 ---
 
 ## 8
 
-Screenshot: `SpendingCoachAgent.java` lines 272 to 320
+**Proof: spending coach**
 
-distinct merchants · `parallelMap` · `PiiGuardRail`
+bank + card CSVs in · 7 files out · model for 3 judgement calls
 
 ---
 
@@ -87,24 +82,24 @@ Recording, 35 seconds
 
 ## 10
 
-**9 actions · 0 model calls**
+Screenshot: `SpendingAnalysis.java` lines 57 to 135
 
-same bank next month: still 0
+a record the model can query
 
 ---
 
 ## 11
 
-**Trade-offs**
+**Vision vs what I ran**
 
-types are the contract · deterministic by default · tests need no key
+planning ✓ · domain model ✓ · Spring ✓ · MCP ✓ · tests ✓
 
-missed `post` = STUCK · termination hides the reason · 100 s per flow test class
+A2A ✗ · natural language agents ✗
 
 ---
 
 ## 12
 
-**Hand-written graph or planned route**
+**Not there yet. Already useful.**
 
-Spring AI · LangChain4j · LangGraph · Embabel
+code-centric · graphical · converging
