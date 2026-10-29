@@ -1,51 +1,51 @@
 # Embabel in five minutes: transcript
 
-Spoken word for word. The clock is the target time to reach each slide. About 650 words, 4:45 at a calm pace, 15 seconds of slack. The subject is Ragbot, the agentic RAG chatbot published by the Embabel team (`github.com/embabel/ragbot`), described in "Building a Chatbot with Embabel Agentic RAG" (Rod Johnson, January 2026). Code shown is Ragbot's current code, which matches the Embabel 1.5.1 API.
+Spoken word for word. The clock is the target time to reach each slide. About 650 words, 4:45 at a calm pace, 15 seconds of slack. The subject is Embabel; Ragbot (`github.com/embabel/ragbot`), the agentic RAG chatbot published by the Embabel team, is the running showcase. Code shown is Ragbot's current code, checked with javap against the Embabel 1.5.1 jars. Claims about workflows, MCP, REST and testing come from the five POCs in this repository.
 
 ## 0:00 Slide 1
 
-Embabel is an agent framework for the JVM, built on Spring. Today I will build a chatbot with it, step by step, and show it answering questions from documents it has never seen.
+Embabel is an agent framework for the JVM, created by Rod Johnson, the person behind Spring. Its one big idea: you do not wire the steps of an agent together. You describe the steps, and a planner decides the order at runtime.
 
-## 0:15 Slide 2
+## 0:20 Slide 2
 
-Here is the question we want answered: what did Schumann think of Liszt? The documents are Robert Schumann's music criticism from the 1830s and Philip Hale's program notes from the early 1900s. They are obscure on purpose. If the bot answers with quotes, it read them; it did not remember them.
+An agent is a Spring bean. Its methods are annotated as actions, each with typed inputs and one typed output. A goal says what the agent is trying to produce. Conditions are methods that return a boolean, for branching. And the types are your own domain records, so the contract between steps is code you can compile and refactor.
 
-## 0:40 Slide 3
+## 0:45 Slide 3
 
-First idea: in Embabel there is no special chatbot type. A chat is an ordinary agent process that lives for a while and reacts to messages. The conversation sits on the blackboard like any other object, and an action fires every time a user message arrives.
+At runtime everything lives on a blackboard of typed objects. The planner looks at what is there and which actions can run, picks one, runs it, and plans again with the new object on the board. For workflows it uses goal oriented action planning, the technique from game AI, which finds a path to the goal. For chat it uses utility AI, which picks the most valuable action for the moment. The planner is an algorithm, not a model, so the route is predictable and explainable.
 
-## 1:00 Slide 4
+## 1:15 Slide 4
 
-This is the smallest possible chatbot. One method. The annotation says: run me whenever a user message arrives, and you may run me again and again. Embabel injects the conversation and a context. We ask a model to respond to the messages so far and send the reply back. That works, but it only knows what the model knows.
+Inside an action you talk to models through one fluent API. You choose a model by role, so swapping models is configuration. You can hand the model tools, which are plain Java methods. You can give it references, like a document store. Prompts can be templates. And guardrails check what goes in and out.
 
-## 1:30 Slide 5
+## 1:40 Slide 5
 
-So we add documents. Classic RAG is a pipeline: take the question, retrieve some chunks, paste them into the prompt, answer. The retrieval happens once, before the model thinks. Agentic RAG turns it around. The model gets search tools and decides what to search for, reads, and searches again if it needs to. A question that compares two critics needs two searches; a pipeline does one.
+To make this concrete, I will use Ragbot, a chatbot the Embabel team published. It answers questions about 19th-century music criticism: obscure on purpose, so the model has to read the documents instead of remembering them.
 
-## 2:00 Slide 6
+## 1:55 Slide 6
 
-That is one line of change. `withReference` hands the model a `ToolishRag`, which exposes the search store as tools: vector search, text search, regex, expanding a chunk to its neighbours. `rendering` points at a prompt template instead of a string. And `respondWithSystemPrompt` fills that template with values from configuration.
+In Embabel a chat is not a special kind of program. It is the same agent process with a conversation on the blackboard. This is a complete chat action: it fires on every user message, may run again and again, asks a model to respond, and sends the reply.
 
-## 2:25 Slide 7
+## 2:20 Slide 7
 
-The template splits the prompt in two. The voice is how the bot talks: an enthusiastic guide, Shakespeare, a formal lawyer. The objective is what it must do: answer from the archives, quote the sources, do not rely on general knowledge. Both live in template files, and you swap the persona in `application.yml` without touching code.
+The real Ragbot action is the same method with three more calls. `withReference` gives the model a search store as tools, so it decides what to read and can search again; that is agentic RAG. `rendering` uses a prompt template instead of a string. And the template is filled from configuration, so the persona changes in YAML, not in code.
 
-## 2:50 Slide 8
+## 2:45 Slide 8
 
-To make it a chatbot, one Spring bean. `utilityFromPlatform` finds every action in your components and uses utility scoring: when a message arrives it runs the most valuable action whose inputs are present. Today there is one action. Add another, say for a different kind of question, and the bot gains that skill with no extra wiring.
+To turn actions into a chatbot, one bean. It finds every action in your components and lets the utility planner choose between them when a message arrives. Add another action and the bot has a new skill, without touching this code.
 
-## 3:10 Slide 9
+## 3:05 Slide 9
 
-Here it is running. I ingest Schumann, then Hale's notes from Project Gutenberg, and ask three questions: what Schumann thought of Liszt, what Hale thought, and to contrast them. Watch the tool calls on the side: it searches each critic separately before it answers.
+Here it is running. Two critics ingested, three questions about Liszt. Watch the tool calls: for the comparison question it searches each critic on its own before answering, with quotes.
 
-## 3:50 Slide 10
+## 3:45 Slide 10
 
-Where the documents live is pluggable. Lucene, on disk, with no external service. Neo4j, which adds navigation of document structure. Or any Spring AI vector store through an adapter. The code does not change, but the tools the model gets do: the Spring AI adapter only offers vector search.
+The chat is one shape. The same actions, goals and planner run plain workflows. I built five agents with it: meeting notes, a dependency advisor, a review loop with a critic, a spending coach over bank statements, and a server that exposes them all over MCP and REST without changing their code. A hundred and fifty-three tests, and none needs an API key, because Embabel ships a fake context and a mocked model for tests.
 
-## 4:05 Slide 11
+## 4:10 Slide 11
 
-Trade-offs. The good: the model chooses what to read, answers come with quotes, and there is no retrieval pipeline to tune by hand. The cost: every search is another round trip to the model, so answers are slower and cost more than one-shot RAG, and quality depends on how well the model uses tools. And the API moves fast: the template call was renamed between the version in the blog post and the current one.
+Trade-offs. The good: types are the contract, deterministic code is the default and the model is the exception, and it is Spring all the way down, so it fits the applications you already run. The cost: the API is young and moves fast; Ragbot's template call was renamed between the blog post and today. If you forget to declare a condition in an action's post list, the planner gets stuck and does not say why. And integration tests boot Spring, which is slow.
 
-## 4:30 Slide 12
+## 4:35 Slide 12
 
-How this compares. Spring AI and LangChain4j both ship retrieval advisors that fetch first and answer second; you can build tool-based search yourself. LangGraph can do agentic RAG, but you draw the loop. In Embabel the chat is an action, the search is a reference, and adding skills means adding actions. Thank you.
+Compared to the neighbours: Spring AI and LangChain4j give you model calls, and you write the control flow. LangGraph makes you draw the graph. Embabel lets a planner draw it from your types. Thank you.

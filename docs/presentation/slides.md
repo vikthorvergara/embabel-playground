@@ -1,34 +1,52 @@
-# Embabel in five minutes: slides
-
-Twelve slides, dark background, one idea each. Everything below a `---` line is the whole text of that slide. The talk walks through building Ragbot, the agentic RAG chatbot from `github.com/embabel/ragbot`. Code is shown highlighted, never as plain text; it is the code at Ragbot's HEAD, which matches the Embabel 1.5.1 API (checked with javap). Render the diagram on slide 5 as an image.
-
+---
+marp: true
+theme: gaia
+_class: invert
 ---
 
-## 1
+# 1
 
-**A chatbot with Embabel**
+**Embabel**
 
-agentic RAG on the JVM
+agents on the JVM · planned, not wired
 
 ---
 
 ## 2
 
-> What did Schumann think of Liszt?
+**An agent is a Spring bean**
 
-19th-century criticism · the model cannot know it
+actions · goals · conditions · your domain types
 
 ---
 
 ## 3
 
-**A chat is just an agent process**
+**Blackboard → planner → action**
 
-`Conversation` on the blackboard · action fires on `UserMessage`
+GOAP for workflows · Utility AI for chat
+
+re-plans after every step
 
 ---
 
 ## 4
+
+**`context.ai()`**
+
+model by role · tools · references · templates · guardrails
+
+---
+
+## 5
+
+**Showcase: Ragbot**
+
+a chat over 19th-century music criticism
+
+---
+
+## 6
 
 ```java
 @Action(canRerun = true, trigger = UserMessage.class)
@@ -42,15 +60,7 @@ void respond(Conversation conversation, ActionContext context) {
 
 ---
 
-## 5
-
-**Pipeline RAG vs agentic RAG**
-
-Image: left, a straight line `question → retrieve → stuff → answer`; right, the model in a loop with search tools `vector · text · regex · expand`.
-
----
-
-## 6
+## 7
 
 ```java
 var reply = context.ai()
@@ -65,14 +75,6 @@ var reply = context.ai()
 
 ---
 
-## 7
-
-**voice × objective**
-
-Jinja templates · switch persona in `application.yml`
-
----
-
 ## 8
 
 ```java
@@ -82,7 +84,7 @@ Chatbot chatbot(AgentPlatform agentPlatform) {
 }
 ```
 
-new action = new capability
+new action = new skill
 
 ---
 
@@ -94,9 +96,9 @@ Recording, 40 seconds
 
 ## 10
 
-**Lucene · Neo4j · Spring AI VectorStore**
+**Same model beyond chat**
 
-same API · different tools for the model
+workflows · MCP and REST · tests without a key
 
 ---
 
@@ -104,9 +106,9 @@ same API · different tools for the model
 
 **Trade-offs**
 
-model chooses what to read · grounded quotes · no pipeline to tune
+types are the contract · deterministic by default · Spring native
 
-more round trips · depends on tool use · API moved fast
+young API · missed `post` = stuck · slow integration tests
 
 ---
 
@@ -114,4 +116,4 @@ more round trips · depends on tool use · API moved fast
 
 **Spring AI · LangChain4j · LangGraph**
 
-retrieve-then-answer vs search-while-answering
+model calls vs hand-drawn graphs vs a planner
