@@ -1,6 +1,6 @@
 # Recording script for slide 9
 
-Target: 40 seconds in the talk. Record once at full length, cut afterwards. Ragbot has not been run in this repository yet; this recording is the run that backs the talk, so do it before any dry run.
+Target: 40 seconds in the talk. The current take is `assets/rag-chat.mp4` (39 s), embedded on the "Ragbot running" slide. Re-record with these steps if the run changes.
 
 ## Before recording
 

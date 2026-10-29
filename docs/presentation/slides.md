@@ -1,14 +1,15 @@
 ---
 marp: true
-theme: gaia
+theme: uncover
 paginate: true
-_class: invert
+class: invert
 _paginate: false
 ---
 
 ![bg right:35% contain](assets/embabel.png)
 
 # Embabel
+<sup><sub>(EM·BAY·BEL)</sub></sup>
 
 agents on the JVM · planned, not wired
 
@@ -82,7 +83,7 @@ Chatbot chatbot(AgentPlatform agentPlatform) {
 
 ## Ragbot running
 
-recording, 40 seconds
+<video src="assets/rag-chat.mp4" controls muted playsinline style="width:100%;max-height:75vh"></video>
 
 ---
 
