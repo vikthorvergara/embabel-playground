@@ -1,28 +1,26 @@
 ---
 marp: true
 theme: gaia
+paginate: true
 _class: invert
+_paginate: false
 ---
 
-# 1
+![bg right:35% contain](assets/embabel.png)
 
-**Embabel**
+# Embabel
 
 agents on the JVM · planned, not wired
 
 ---
 
-## 2
-
-**An agent is a Spring bean**
+## An agent is a Spring bean
 
 actions · goals · conditions · your domain types
 
 ---
 
-## 3
-
-**Blackboard → planner → action**
+## Blackboard → planner → action
 
 GOAP for workflows · Utility AI for chat
 
@@ -30,23 +28,19 @@ re-plans after every step
 
 ---
 
-## 4
-
-**`context.ai()`**
+## `context.ai()`
 
 model by role · tools · references · templates · guardrails
 
 ---
 
-## 5
-
-**Showcase: Ragbot**
+## Showcase: Ragbot
 
 a chat over 19th-century music criticism
 
 ---
 
-## 6
+## A chat action
 
 ```java
 @Action(canRerun = true, trigger = UserMessage.class)
@@ -60,7 +54,7 @@ void respond(Conversation conversation, ActionContext context) {
 
 ---
 
-## 7
+## Search as a reference
 
 ```java
 var reply = context.ai()
@@ -75,7 +69,7 @@ var reply = context.ai()
 
 ---
 
-## 8
+## New action = new skill
 
 ```java
 @Bean
@@ -84,27 +78,21 @@ Chatbot chatbot(AgentPlatform agentPlatform) {
 }
 ```
 
-new action = new skill
+---
+
+## Ragbot running
+
+recording, 40 seconds
 
 ---
 
-## 9
-
-Recording, 40 seconds
-
----
-
-## 10
-
-**Same model beyond chat**
+## Same model beyond chat
 
 workflows · MCP and REST · tests without a key
 
 ---
 
-## 11
-
-**Trade-offs**
+## Trade-offs
 
 types are the contract · deterministic by default · Spring native
 
@@ -112,8 +100,6 @@ young API · missed `post` = stuck · slow integration tests
 
 ---
 
-## 12
-
-**Spring AI · LangChain4j · LangGraph**
+## Spring AI · LangChain4j · LangGraph
 
 model calls vs hand-drawn graphs vs a planner
