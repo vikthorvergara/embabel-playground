@@ -41,3 +41,4 @@ over MCP and REST; see its definition for how to connect an MCP client.
 
 Each definition ends with "Running" and "Learnings" sections written after implementation.
 [docs/RETROSPECTIVE.md](docs/RETROSPECTIVE.md) sums up the first four.
+[docs/presentation/](docs/presentation/slides.md) holds a five-minute talk on Embabel, using the Ragbot chatbot as its showcase: Marp slides and the recording script.
